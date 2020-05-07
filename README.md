@@ -19,4 +19,19 @@ Et voilà, for the hardware requirements, you are done.
 
 # How to run
 
+* Execute this on your Docker Compose Machine : 
+
+```bash 
+export DESIRED_VERSION=feature/initalisation-du-code
+
+git clone git@github.com:pegasus-io/this-is-gravitee.git
+
+cd this-is-gravitee/
+
+git checkout ${DESIRED_VERSION} 
+
+sudo ./operations.sh 
+
+```
+
 
