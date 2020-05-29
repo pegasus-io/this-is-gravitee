@@ -54,6 +54,7 @@ services:
       - xpack.monitoring.enabled=false
       - cluster.name=elasticsearch
     user: "${OPERATOR_UID}:${OPERATOR_GID}"
+    user: "${OPERATOR_UID}:${OPERATOR_GID}"
     ulimits:
       nofile: 65536
     labels:
