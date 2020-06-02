@@ -50,8 +50,7 @@ docker-compose pull
 # and I don't even have to restart anything, elastic stack
 # boots up immediately
 # ---
-docker-compose up -d && sleep 7s && sudo chmod a+rw -R ./data
-docker-compose logs -f
+docker-compose up -d && sleep 7s && sudo chmod a+rw -R ./data && docker-compose restart && docker-compose logs -f
 
 # --- work cycle
 # docker-compose down --rmi all && docker system prune -f --all && docker system prune -f --volumes && docker-compose up -d && docker-compose logs -f
