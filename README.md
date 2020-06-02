@@ -23,9 +23,9 @@ This Recipes was tested on `Debian`, and should also run with erros on `Darwin` 
 export DESIRED_VERSION=feature/initalisation-du-code
 export DESIRED_VERSION=feature/reproducing-bug-for-issue-1
 
-git clone git@github.com:pegasus-io/this-is-gravitee.git
+git clone git@github.com:pegasus-io/this-is-gravitee.git ~/gravitee-earthling-issues
 
-cd this-is-gravitee/
+cd ~/gravitee-earthling-issues
 
 git checkout ${DESIRED_VERSION}
 
