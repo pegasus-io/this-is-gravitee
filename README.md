@@ -14,11 +14,14 @@ This Recipes was tested on `Debian`, and should also run with erros on `Darwin` 
 
 # How to run
 
+### `Gravitee` latest before 3
+
 * Check the Hardware n Software requirements below
 * Execute this on your Docker Compose Machine :
 
 ```bash
 export DESIRED_VERSION=feature/initalisation-du-code
+export DESIRED_VERSION=feature/reproducing-bug-for-issue-1
 
 git clone git@github.com:pegasus-io/this-is-gravitee.git
 
@@ -28,7 +31,30 @@ git checkout ${DESIRED_VERSION}
 
 sudo ./operations.sh
 
+./reproduce_gravitee_latest_before_3.sh
+
 ```
+
+### `Gravitee` latest before 3
+
+* Check the Hardware n Software requirements below
+* Execute this on your Docker Compose Machine :
+
+```bash
+export DESIRED_VERSION=feature/initalisation-du-code
+export DESIRED_VERSION=feature/reproducing-bug-for-issue-1
+
+git clone git@github.com:pegasus-io/this-is-gravitee.git
+
+cd this-is-gravitee/
+
+git checkout ${DESIRED_VERSION}
+
+sudo ./operations.sh
+
+
+```
+
 
 ### Software Requirements
 

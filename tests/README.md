@@ -4,10 +4,11 @@
 ## Gravitee (before relase 3)
 
 ```bash
-
+# ---
 # https://docs.gravitee.io/am/2.x/management-api/index.html : la belle interface graphique de l'API
 # Obtenir un token 'Gravitee AM API'
-#
+# https://docs.gravitee.io/am/2.x/management-api/index.html
+# ---
 export GRAVITEE_USER_NAME=admin
 export GRAVITEE_USER_PWD=admin
 export GRAVITEE_APIM_API_HOST=am.gravitee.io
