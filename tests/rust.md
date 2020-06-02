@@ -160,7 +160,7 @@ cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .
 # ---
 # Seul le secret a été renouvelé ...
 # export GRAVITEE_AM_CLIENT_ID=$(cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .[].clientId| awk -F '"' '{print $2}')
-export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .clientSecret| awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .[].clientSecret| awk -F '"' '{print $2}')
 
 
 
