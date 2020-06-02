@@ -1,5 +1,8 @@
 version: '3.5'
-
+# --
+# Ce docker-compose, est la modification de son alter ego, pour le stack gravitee "avant release 3"
+# Son lancement comporte encore des erreurs, notamment à cause des breaking changes, en matière d'architecture  : un composant de plus côté [Gravitee APIM], entre autres.
+# --
 networks:
   frontend:
     name: frontend

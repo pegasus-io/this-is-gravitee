@@ -58,3 +58,16 @@ Which is why our recommendations to run this docker-compose, on the hardawre req
 
 Et voilà, for the hardware requirements, you are done.
 
+# Gravitee 3
+
+Gravitee 3 release brings a new architecture, with 4 instead of 3 components , for `Gravitee APIM` : https://docs.gravitee.io/apim/3.x/apim_installguide.html
+
+* There is no `2.x` release of `Gravitee APIM` , just a `1.x`, and a leap to `3.x` :
+* There is a `2.x` release of `Gravitee AM` , not just a `1.x`, and also a `3.x` :
+
+![Official Gravitee Site](https://github.com/Jean-Baptiste-Lasselle/for-fellow-developers/raw/master/docuementation/impr.ecrans/gravitee/GRAVITEE_AM_MAJOR_SEMVERSIONS_2020-06-02%2012-33-05.png)
+
+* Just before any `3.x` release, the `lastest` docker images allowed me therefore to successfully provision a `Gravitee` Fullstack including `Gravitee APIM 1.x (latest)` and `Gravitee AM 2.x (latest)`
+* Since `3.x` release brings in breaking changes, especially for the management APIs, I will stick to stack with versions `Gravitee APIM 1.x (latest)` and `Gravitee AM 2.x (latest)`.
+* As for the `Gravitee APIM` images, the `tag` is not the only part of the docker images 's `GUN` (a sort of UUID for docker images, Global Unique Name. So that keepping `latest` tag **does not infer any upgrade to `Gravitee APIM` version `3.x`, as time goes by.**
+* As for the `Gravitee AM` images, the `tag` is indeed, this time, the only part of the docker images 's `GUN` (a sort of UUID for docker images, Global Unique Name. Therefore, keepping `latest` tag **does infer an upgrade to `Gravitee AM` version `3.x`, as time goes by, for the 3 compoants (gateway, ui, management api)**
