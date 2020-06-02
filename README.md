@@ -29,13 +29,11 @@ cd this-is-gravitee/
 
 git checkout ${DESIRED_VERSION}
 
-sudo ./operations.sh
-
 ./reproduce_gravitee_latest_before_3.sh
 
 ```
 
-### `Gravitee` latest before 3
+### `Gravitee` release 3
 
 * Check the Hardware n Software requirements below
 * Execute this on your Docker Compose Machine :
