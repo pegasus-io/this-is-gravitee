@@ -1,10 +1,31 @@
 #!/bin/bash
 
 echo ""
-echo "Hi [$(whoami)], be advised you must be an admin (allowed to run 'sudo'), to execute this [$0] script"
+echo "Hi [$(whoami)], This script regenerates the docker-compose for gravitee full stack, latest, before release 3 happened"
 echo ""
 
-./elastic-system-setup.sh
+
+regenerateTheWholeStackOnFiles () {
+
+echo "Download required files ..."
+
+
+mkdir -p traefik/certs ; mkdir -p traefik/config ; mkdir -p mongo/docker-entrypoint-initdb.d ; mkdir -p gravitee
+
+curl -Lf https://raw.githubusercontent.com/gravitee-io/gravitee-docker/master/platform/docker-compose.yml -o "docker-compose.yml"
+
+cd mongo/docker-entrypoint-initdb.d && { curl -Lf https://raw.githubusercontent.com/gravitee-io/gravitee-docker/master/platform/mongo/docker-entrypoint-initdb.d/create-index.js -o "create-index.js" ; cd -; }
+cd traefik/certs && { curl -Lf https://raw.githubusercontent.com/gravitee-io/gravitee-docker/master/platform/traefik/certs/gio-selfsigned.crt -o "gio-selfsigned.crt" ; cd -; }
+
+cd traefik/certs && { curl -Lf https://raw.githubusercontent.com/gravitee-io/gravitee-docker/master/platform/traefik/certs/gio-selfsigned.key -o "gio-selfsigned.key" ; cd -; }
+
+cd traefik/config && { curl -Lf https://raw.githubusercontent.com/gravitee-io/gravitee-docker/master/platform/traefik/config/traefik.toml -o "traefik.toml" ; cd -; }
+
+cd gravitee && { curl -Lf https://raw.githubusercontent.com/gravitee-io/gravitee-docker/master/platform/gravitee/cacerts -o "cacerts" ; cd -; }
+
+}
+
+regenerateTheWholeStackOnFiles
 
 # regenerateTheWholeStackOnFiles
 # chown -R $(whoami):$(whoami) $(pwd)
@@ -38,9 +59,22 @@ sed -i "s#OPERATOR_UID_JINJA2_VAR#$(id -u)#g" ./.env
 sed -i "s#OPERATOR_GID_JINJA2_VAR#$(id -g)#g" ./.env
 
 
+echo "also have to add a line in docker-compose.yml to elasticsearch service def. : "
 cat ./docker-compose.yml | grep -v ':/' |grep -A8 'elasticsearch:'
+
+
 cat docker-compose.yml | grep -v ':/' |grep -C10 'ulimits:'
+# inserting line just before "ulimits:"
+sed -i '/ulimits:/i\ \ \ \ user: "${OPERATOR_UID}:${OPERATOR_GID}"' ./docker-compose.yml
+
+echo
+
+echo "The Launch Gravitee.io API Platform  Pulumi recipe is now generated..."
+
 # + gitops
+
+
+
 docker-compose pull
 # ---
 # I make the process sleep for a few seconds, while in
