@@ -130,10 +130,10 @@ cat ./clientFullInfos.gravitee | jq .
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients" | tail -n 1 | jq .
 
 export GRAVITEE_AM_CLIENT_ID=$(cat ./clientFullInfos.gravitee | jq .[].clientId | awk -F '"' '{print $2}')
-export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.gravitee | jq .clientSecret| awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.gravitee | jq .[].clientSecret| awk -F '"' '{print $2}')
 
 export GRAVITEE_AM_CLIENT_UID=b23b5d79-18e2-405f-bb5d-7918e2f05f21
-export GRAVITEE_AM_CLIENT_UID=$(cat ./clientFullInfos.gravitee | jq .id| awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_UID=$(cat ./clientFullInfos.gravitee | jq .[].id| awk -F '"' '{print $2}')
 
 echo " GRAVITEE_AM_CLIENT_ID=[${GRAVITEE_AM_CLIENT_ID}]"
 echo " GRAVITEE_AM_CLIENT_UID=[${GRAVITEE_AM_CLIENT_UID}]"
@@ -184,7 +184,7 @@ export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.renewed.clientSecret.gr
 
 
 export GRAVITEE_AM_CLIENT_UID=86e156ad-042d-4d52-a156-ad042dbd52a1
-export GRAVITEE_AM_CLIENT_UID=$(cat ./clientFullInfos.gravitee | jq .id| awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_UID=$(cat ./clientFullInfos.gravitee | jq .[].id| awk -F '"' '{print $2}')
 export CURRENT_GRAVITEE_AM_CLIENT_ID=$(curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients" | tail -n 1 | jq . | jq --arg CLIENT_UID "${GRAVITEE_AM_CLIENT_UID}" '.[]|select(.id==$CLIENT_UID)'|jq '.clientId'|awk -F '"' '{print $2}')
 export URL_APPEL_GRAVITEE_AM_API="https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients/${GRAVITEE_AM_CLIENT_UID}"
 
