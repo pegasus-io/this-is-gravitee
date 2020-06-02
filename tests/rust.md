@@ -169,7 +169,7 @@ export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.renewed.clientSecret.gr
 # ---
 # ----  https://docs.gravitee.io/am/2.x/am_quickstart_secure_apis.html : voilà comment crééer le Oauth2 lient derrière
 # ---
-# http://graviteeio-am-gateway-host/:securityDomainPath/oauth/token
+# https://graviteeio-am-gateway-host/:securityDomainPath/oauth/token
 # curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json'  -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "${URLAMOI}" | tail -n 1 | jq .
 # ---
 # --- CONFIGURING an [Oauth2 client] over the 'Gravitee Client'
@@ -198,7 +198,7 @@ export OAUTH2_REDIRECT_URI=https://api.mycompany.io:443/b2c
 export OAUTH2_REDIRECT_URI=https://saint-nectaire.mycompany.io:443/tls
 
 export PAYLOAD_APPEL_API="{ \
-  \"redirectUris\": [ \"https://saint-nectaire.mycompany.io:443/tls\", \"http://saint-nectaire.mycompany.io:8000/notls\" ], \
+  \"redirectUris\": [ \"https://saint-nectaire.mycompany.io:443/tls\", \"https://saint-nectaire.mycompany.io:8000/notls\" ], \
   \"authorizedGrantTypes\": [ \"authorization_code\", \"implicit\", \"client_credentials\" ], \
   \"responseTypes\": [ \"CODE\", \"TOKEN\" ] }"
 
@@ -316,7 +316,7 @@ echo ""
 read -p "Pressez la touche entrée pour exécuter la commande [curl] qui vous obtiendra un [ACCESS_TOKEN]" ATTENTE_DECLAREZ_SOUS_APIM_UNE_API
 
 
-export URL_APPEL_GRAVITEE_AM_API="http://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/oauth/token?grant_type=client_credentials&scope=read&client_id=${GRAVITEE_AM_CLIENT_ID}&client_secret=${GRAVITEE_AM_CLIENT_SECRET}"
+export URL_APPEL_GRAVITEE_AM_API="https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/oauth/token?grant_type=client_credentials&scope=read&client_id=${GRAVITEE_AM_CLIENT_ID}&client_secret=${GRAVITEE_AM_CLIENT_SECRET}"
 curl -ivk -H 'Accept: application/json' -H 'Content-Type: application/json' --data "${PAYLOAD_APPEL_API}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X POST "${URL_APPEL_GRAVITEE_AM_API}" | tail -n 1 | tee ./finally.GRAVITEE_ACCESS_TOKEN.token
 curl -ivk -H 'Accept: application/json' -H 'Content-Type: application/json' --data "${PAYLOAD_APPEL_API}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "${URL_APPEL_GRAVITEE_AM_API}"
 
