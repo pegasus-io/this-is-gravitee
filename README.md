@@ -30,7 +30,7 @@ cd ~/gravitee-earthling-issues
 git checkout ${DESIRED_VERSION}
 
 ./reproduce_gravitee_latest_before_3.sh
-
+# docker-compose down --rmi all && docker system prune -f --all && docker system prune -f --volumes && cd && sudo rm -fr ~/gravitee-earthling-issues
 ```
 
 ### `Gravitee` release 3
