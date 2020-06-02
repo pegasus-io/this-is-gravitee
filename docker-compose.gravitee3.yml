@@ -1,5 +1,8 @@
 version: '3.5'
-
+# --
+# Ce docker-compose, est la modification de son alter ego, pour le stack gravitee "avant release 3"
+# Son lancement comporte encore des erreurs, notamment à cause des breaking changes, en matière d'architecture  : un composant de plus côté [Gravitee APIM], entre autres.
+# --
 networks:
   frontend:
     name: frontend
@@ -65,16 +68,15 @@ services:
       - storage
 
   apim_gateway:
-    # this gravitee image GUN is only valid for Gravitee 1.*.*
-    image: graviteeio/gateway:${APIM_VERSION:-latest}
+    # image: graviteeio/gateway:${APIM_VERSION:-latest} # this gravitee image GUN is only valid for Gravitee 1.*.*
+    image: graviteeio/apim-gateway:${APIM_VERSION:-latest}
     restart: always
     environment:
       - gravitee_management_mongodb_uri=mongodb://mongodb:27017/gravitee?serverSelectionTimeoutMS=5000&connectTimeoutMS=5000&socketTimeoutMS=5000
       - gravitee_ratelimit_mongodb_uri=mongodb://mongodb:27017/gravitee?serverSelectionTimeoutMS=5000&connectTimeoutMS=5000&socketTimeoutMS=5000
       - gravitee_reporters_elasticsearch_endpoints_0=http://elasticsearch:9200
-    volumes:
+    # volumes:
       # - "$PWD/gravitee/cacerts:/etc/ssl/certs/java/cacerts"
-      - "$PWD/gravitee:/etc/ssl/certs/java"
     labels:
       - "traefik.frontend.rule=Host:apim.gravitee.io"
       - "traefik.backend=graviteeio-apim-gateway"
@@ -88,15 +90,13 @@ services:
       - frontend
 
   apim_portal:
-    # GUN for APIM version 1.*.*
-    image: graviteeio/management-ui:${APIM_VERSION:-latest}
-    # image: graviteeio/apim-management-ui:${APIM_VERSION:-latest}
+    # image: graviteeio/management-ui:${APIM_VERSION:-latest} # GUN for APIM version 1.*.*
+    image: graviteeio/apim-management-ui:${APIM_VERSION:-latest}
     restart: always
     environment:
       - MGMT_API_URL=https:\/\/apim.gravitee.io\/management\/
-    volumes:
+    # volumes:
       # - "$PWD/gravitee/cacerts:/etc/ssl/certs/java/cacerts"
-      - "$PWD/gravitee:/etc/ssl/certs/java"
     labels:
       - "traefik.frontend.redirect.regex=^https://apim.gravitee.io/portal$$"
       - "traefik.frontend.redirect.replacement=https://apim.gravitee.io/portal/"
@@ -110,8 +110,8 @@ services:
       - frontend
 
   apim_management:
-    image: graviteeio/management-api:${APIM_VERSION:-latest}
-    # image: graviteeio/apim-management-api:${APIM_VERSION:-latest}
+    # image: graviteeio/management-api:${APIM_VERSION:-latest}
+    image: graviteeio/apim-management-api:${APIM_VERSION:-latest}
     restart: always
     environment:
       - gravitee_management_mongodb_uri=mongodb://mongodb:27017/gravitee?serverSelectionTimeoutMS=5000&connectTimeoutMS=5000&socketTimeoutMS=5000
@@ -120,9 +120,8 @@ services:
       - gravitee_jwt_cookiepath=/management
       - gravitee_jwt_cookiesecure=true
       - gravitee_jwt_cookiedomain=apim.gravitee.io
-    volumes:
+    # volumes:
       # - "$PWD/gravitee/cacerts:/etc/ssl/certs/java/cacerts"
-      - "$PWD/gravitee:/etc/ssl/certs/java"
     labels:
       - "traefik.frontend.rule=Host:apim.gravitee.io;PathPrefix:/management"
       - "traefik.backend=graviteeio-apim-management-api"
@@ -141,9 +140,8 @@ services:
     environment:
       - gravitee_management_mongodb_uri=mongodb://mongodb:27017/gravitee-am?serverSelectionTimeoutMS=5000&connectTimeoutMS=5000&socketTimeoutMS=5000
       - gravitee_oauth2_mongodb_uri=mongodb://mongodb:27017/gravitee-am?serverSelectionTimeoutMS=5000&connectTimeoutMS=5000&socketTimeoutMS=5000
-    volumes:
+    # volumes:
       # - "$PWD/gravitee/cacerts:/etc/ssl/certs/java/cacerts"
-      - "$PWD/gravitee:/etc/ssl/certs/java"
     labels:
       - "traefik.backend=graviteeio-am-gateway"
       - "traefik.frontend.rule=Host:am.gravitee.io;PathPrefixStrip:/auth"
@@ -164,9 +162,8 @@ services:
       - gravitee_jwt_cookiepath=/
       - gravitee_jwt_cookiesecure=true
       - gravitee_jwt_cookiedomain=am.gravitee.io
-    volumes:
+    # volumes:
       # - "$PWD/gravitee/cacerts:/etc/ssl/certs/java/cacerts"
-      - "$PWD/gravitee:/etc/ssl/certs/java"
     labels:
       - "traefik.backend=graviteeio-am-managementapi"
       - "traefik.frontend.rule=Host:am.gravitee.io;PathPrefix:/management,/admin"
