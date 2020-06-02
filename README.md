@@ -23,7 +23,7 @@ This Recipes was tested on `Debian`, and should also run with erros on `Darwin` 
 export DESIRED_VERSION=feature/initalisation-du-code
 export DESIRED_VERSION=feature/reproducing-bug-for-issue-1
 
-git clone git@github.com:pegasus-io/this-is-gravitee.git ~/gravitee-earthling-issues
+git clone git@gitlab.com:bureau1/prototypes/consolidation_gravitee_before3.git ~/gravitee-earthling-issues
 
 cd ~/gravitee-earthling-issues
 
@@ -42,7 +42,7 @@ git checkout ${DESIRED_VERSION}
 export DESIRED_VERSION=feature/initalisation-du-code
 export DESIRED_VERSION=feature/reproducing-bug-for-issue-1
 
-git clone git@github.com:pegasus-io/this-is-gravitee.git
+git clone git@gitlab.com:bureau1/prototypes/consolidation_gravitee_before3.git
 
 cd this-is-gravitee/
 
