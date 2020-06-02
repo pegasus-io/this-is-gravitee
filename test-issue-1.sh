@@ -4,8 +4,6 @@ echo ""
 echo "Hi [$(whoami)], be advised you must be an admin (allowed to run 'sudo'), to execute this [$0] script"
 echo ""
 
-./elastic-system-setup.sh
-
 # regenerateTheWholeStackOnFiles
 # chown -R $(whoami):$(whoami) $(pwd)
 export QUISUISJE=$(whoami)
@@ -38,9 +36,6 @@ sed -i "s#OPERATOR_UID_JINJA2_VAR#$(id -u)#g" ./.env
 sed -i "s#OPERATOR_GID_JINJA2_VAR#$(id -g)#g" ./.env
 
 
-cat ./docker-compose.yml | grep -v ':/' |grep -A8 'elasticsearch:'
-cat docker-compose.yml | grep -v ':/' |grep -C10 'ulimits:'
-# + gitops
 docker-compose pull
 # ---
 # I make the process sleep for a few seconds, while in
@@ -50,8 +45,5 @@ docker-compose pull
 # and I don't even have to restart anything, elastic stack
 # boots up immediately
 # ---
-docker-compose -f docker-compose.gravitee3.yml up -d && sleep 7s && sudo chmod a+rw -R ./data
-docker-compose -f docker-compose.gravitee3.yml logs -f
-
-# --- work cycle
-# docker-compose down --rmi all && docker system prune -f --all && docker system prune -f --volumes && docker-compose up -d && docker-compose logs -f
+docker-compose up -d && sleep 7s && sudo chmod a+rw -R ./data
+echo "now you can [docker-compose logs -f]"
