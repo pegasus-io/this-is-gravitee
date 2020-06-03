@@ -150,9 +150,9 @@ curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json'  -H
 
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients" | tail -n 1 | jq .
 
-export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.gravitee | jq .clientSecret| awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .clientSecret | awk -F '"' '{print $2}')
 echo "After renewing Client Secret for [${GRAVITEE_AM_CLIENT_UID}] Gravitee Client, in security domain [${GRAVITEE_SEC_DOMAIN}] client full infos are : "
-cat ./clientFullInfos.gravitee | jq .
+cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .
 echo " renewed GRAVITEE_AM_CLIENT_SECRET=[${GRAVITEE_AM_CLIENT_SECRET}]"
 echo "Previously, ClientSecret for [${GRAVITEE_AM_CLIENT_UID}] Gravitee Client, in security domain [${GRAVITEE_SEC_DOMAIN}] was : "
 cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .
@@ -160,7 +160,7 @@ cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .
 # ---
 # Seul le secret a été renouvelé ...
 # export GRAVITEE_AM_CLIENT_ID=$(cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .[].clientId| awk -F '"' '{print $2}')
-export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .[].clientSecret| awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.renewed.clientSecret.gravitee | jq .clientSecret| awk -F '"' '{print $2}')
 
 
 
@@ -258,10 +258,14 @@ echo ""
 export PAYLOAD_APPEL_API="{  \"configuration\": ${NEW_ID_PROVIDER_CONFIGURATION} }"
 
 export MONGODB_HOST_IN_K8S_CLUSTER=gravitee-am-mongo-mongodb-replicaset-client.default.svc.cluster.local
+
+export MONGODB_HOST_IN_K8S_CLUSTER=mongo
 export MONGODB_PORT_IN_K8S_CLUSTER=27017
 export MONGODB_REPLICASET_NAME=rs0
 export GRAVITEE_AM_HELM_RELEASE_NAME=gravitee-am
-export PAYLOAD_APPEL_API="{  \"configuration\": \"{\\\"uri\\\":\\\"mongodb://${MONGODB_HOST_IN_K8S_CLUSTER}:${MONGODB_PORT_IN_K8S_CLUSTER}/gravitee?&replicaSet=${MONGODB_REPLICASET_NAME}&connectTimeoutMS=30000\\\",\\\"host\\\":\\\"localhost\\\",\\\"port\\\":${MONGODB_PORT_IN_K8S_CLUSTER},\\\"enableCredentials\\\":true,\\\"database\\\":\\\"${GRAVITEE_AM_HELM_RELEASE_NAME}\\\",\\\"usersCollection\\\":\\\"idp_users_voyonsdomaine\\\",\\\"findUserByUsernameQuery\\\":\\\"{username:?}\\\",\\\"usernameField\\\":\\\"username\\\",\\\"passwordField\\\":\\\"password\\\",\\\"passwordEncoder\\\": \\\"BCrypt\\\"} \" , \"name\": \"myDefaultIdentityProvider\"} "
+# export PAYLOAD_APPEL_API="{  \"configuration\": \"{\\\"uri\\\":\\\"mongodb://${MONGODB_HOST_IN_K8S_CLUSTER}:${MONGODB_PORT_IN_K8S_CLUSTER}/gravitee?&replicaSet=${MONGODB_REPLICASET_NAME}&connectTimeoutMS=30000\\\",\\\"host\\\":\\\"localhost\\\",\\\"port\\\":${MONGODB_PORT_IN_K8S_CLUSTER},\\\"enableCredentials\\\":true,\\\"database\\\":\\\"${GRAVITEE_AM_HELM_RELEASE_NAME}\\\",\\\"usersCollection\\\":\\\"idp_users_voyonsdomaine\\\",\\\"findUserByUsernameQuery\\\":\\\"{username:?}\\\",\\\"usernameField\\\":\\\"username\\\",\\\"passwordField\\\":\\\"password\\\",\\\"passwordEncoder\\\": \\\"BCrypt\\\"} \" , \"name\": \"myDefaultIdentityProvider\"} "
+export PAYLOAD_APPEL_API="{  \"configuration\": \"{\\\"uri\\\":\\\"mongodb://${MONGODB_HOST_IN_K8S_CLUSTER}:${MONGODB_PORT_IN_K8S_CLUSTER}/gravitee?&connectTimeoutMS=30000\\\",\\\"host\\\":\\\"localhost\\\",\\\"port\\\":${MONGODB_PORT_IN_K8S_CLUSTER},\\\"enableCredentials\\\":true,\\\"database\\\":\\\"${GRAVITEE_AM_HELM_RELEASE_NAME}\\\",\\\"usersCollection\\\":\\\"idp_users_voyonsdomaine\\\",\\\"findUserByUsernameQuery\\\":\\\"{username:?}\\\",\\\"usernameField\\\":\\\"username\\\",\\\"passwordField\\\":\\\"password\\\",\\\"passwordEncoder\\\": \\\"BCrypt\\\"} \" , \"name\": \"myDefaultIdentityProvider\"} "
+
 
 
 # celle là marche
@@ -333,9 +337,37 @@ echo "# --- "
 # https://docs.gravitee.io/am/2.x/am_userguide_create_client.html
 # et https://docs.gravitee.io/am/2.x/am_quickstart_register_app.html
 # et https://docs.gravitee.io/am/1.x/am_quickstart_register_app.html
+
+
+####  autre essai access token
+# https://docs.gravitee.io/am/2.x/am_userguide_dynamic_client_registration.html#register_new_client
+
+curl  -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}"  -X POST -ivk "https://${GRAVITEE_AM_API_HOST}/${GRAVITEE_SEC_DOMAIN}/oauth/token?grant_type=client_credentials&scope=dcr_admin&client_id=${GRAVITEE_AM_CLIENT_ID}&client_secret=${GRAVITEE_AM_CLIENT_SECRET}"
+
+
 ```
 
 
 # Annexe : Containers releases
 
 https://github.com/gravitee-io/release/tree/master/upgrades/3.x/3.0.0#docker
+
+
+# ANNEXE : Docuementation
+
+#### APIM AM before 3
+
+Using web Ui , I get an API KEY for my API, and I try but unauthorized  (Gravitee AM 2.10.9   and APIM 1.30.11 ) :
+
+```bash
+~/labops$ curl -ik -H "Authorization: Bearer 8b17e62b-fbfe-4508-a275-0f6f7815fa36" https://apim.gravitee.io/jblapi
+HTTP/2 401
+content-type: application/json
+x-gravitee-transaction-id: 395191ed-cbd2-4e9f-9191-edcbd21e9ffa
+content-length: 49
+date: Wed, 03 Jun 2020 15:55:43 GMT
+
+{"message":"Unauthorized","http_status_code":401}
+```
+
+* J'ssaiie d'exécuter https://docs.gravitee.io/apim/1.x/apim_quickstart_consume.html  after  https://docs.gravitee.io/apim/1.x/apim_quickstart_publish.html  mais pour l'instant je n'y arrive pas.
