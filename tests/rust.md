@@ -112,7 +112,7 @@ curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --d
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/" | tail -n 1  | jq '.[]'
 
 # --- enabling gravitee security domain "voyonsdomaine"
-curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\", "enabled" : true}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X PUT "https://${GRAVITEE_AM_API_HOST}:443/management/domains/voyonsdomaine"
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\", \"enabled\" : true}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X PUT "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}"
 
 # --- ré-afficher les infos du domaine gravitee qui vient d'être créé
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/" | tail -n 1  | jq '.[]'
