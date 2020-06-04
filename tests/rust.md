@@ -239,7 +239,13 @@ export EXTENSIVE_PAYLOAD="{ \
 }"
 export PAYLOAD="{ \
   \"name\": \"${GRAVITEE_APPLICATION_NAME}\", \
-  \"description\": \"Test devops creation d\'une application'\" \
+  \"description\": \"Test devops creation d une application\", \
+  \"settings\": { \
+    \"app\": { \
+      \"type\": \"web\", \
+      \"client_id\": \"${GRAVITEE_AM_CLIENT_ID}\" \
+    } \
+  } \
 }"
 
 echo "PAYLOAD=${PAYLOAD}"
