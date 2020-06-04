@@ -84,6 +84,53 @@ echo "GRAVITEE_APIM_API_TOKEN=[${GRAVITEE_APIM_API_TOKEN}]"
 # +++
 # +++ [`Gravitee APIM`] créer une API, nommee `apiVerte`
 # +++ https://docs.gravitee.io/apim/1.x/apim_publisherguide_manage_apis.html
+# +++ https://docs.gravitee.io/apim/1.x/apim_publisherguide_manage_apis.html#apim_quickstart_publish.adoc
+# +++ https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/createApi
+# +
+#
+
+# --- #
+# Configuration of the Default Identity Provider
+#  {"enableCredentials":false} => {"enableCredentials":true}
+#
+export MY_API_NAME=apiVerte
+export MY_API_VERSION=4.1.85
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis"
+
+export EXTENSIVE_PAYLOAD="{
+  \"name\": \"string\",
+  \"version\": \"string\",
+  \"description\": \"string\",
+  \"contextPath\": \"/apiverte\",
+  \"endpoint\": \"https://randomuser.me/api\",
+  \"groups\": [
+    \"groupevert\"
+  ],
+  \"paths\": [
+  \"example.paths.one\",
+  \"example.paths.two\",
+  \"example.paths.three\"
+  ]
+}"
+
+export PAYLOAD="{ \
+  \"name\": \"${MY_API_NAME}\", \
+  \"version\": \"${MY_API_VERSION}\", \
+  \"description\": \"An APi created by the debvops bots to test out infra as code\", \
+  \"contextPath\": \"/apiverte\", \
+  \"endpoint\": \"https://randomuser.me/api\"
+}"
+
+echo "PAYLOAD=${PAYLOAD}"
+
+curl -ik -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | tail -n 1 | jq '.' | tee ./my.gravitee-apim.apiVerte.json
+
+
+cat ./my.gravitee-apim.apiVerte.json | jq .
+
+
+
+export GRAVITEE_AM_DOMAIN_ID_PROVIDER_CONFIG=$(curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "${URL_APPEL_GRAVITEE_AM_API}" | tail -n 1 | jq '.configuration')
 
 
 
