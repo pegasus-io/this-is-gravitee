@@ -85,7 +85,7 @@ curl -X GET -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITE
   * [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
 
 
-* Appeler l'API `Gravitee AM`, avec `curl`, une fois que l'on dispose d'un Token Valide :
+* implémentation :
 
 ```bash
 # https://docs.gravitee.io/am/2.x/management-api/index.html : la belle interface graphique de l'API
