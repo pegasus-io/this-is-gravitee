@@ -204,7 +204,7 @@ echo " GRAVITEE_AM_CLIENT_UID=[${GRAVITEE_AM_CLIENT_UID}]"
 # +++ https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/createApplication
 # +++
 export GRAVITEE_APPLICATION_NAME="appliVerte"
-
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/applications"
 export EXTENSIVE_PAYLOAD="{ \
   \"name\": \"${GRAVITEE_APPLICATION_NAME}\", \
   \"description\": \"Test devops creation d\'une application'\", \
@@ -239,14 +239,14 @@ export EXTENSIVE_PAYLOAD="{ \
 }"
 export PAYLOAD="{ \
   \"name\": \"${GRAVITEE_APPLICATION_NAME}\", \
-  \"description\": \"Test devops creation d\'une application'\"
+  \"description\": \"Test devops creation d\'une application'\" \
 }"
 
 echo "PAYLOAD=${PAYLOAD}"
 
-curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq . | tee ./my.gravitee-apim.apiVerte.json
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq . | tee ./my.gravitee-apim.appliVerte.json
 
-cat ./my.gravitee-apim.apiVerte.json | jq .
+cat ./my.gravitee-apim.appliVerte.json | jq .
 
 # +++
 # +++ [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
@@ -256,8 +256,9 @@ cat ./my.gravitee-apim.apiVerte.json | jq .
 
 
 ```
-
-
+* il manque encore :
+  * faire un API start and API deploy / publish
+  * créer un subscribe plan
 
 
 
