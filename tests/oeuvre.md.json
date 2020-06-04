@@ -1,4 +1,4 @@
-"{
+{
   "name": "string",
   "version": "string",
   "description": "string",
@@ -240,4 +240,3 @@
   },
   "lifecycle_state": "CREATED"
 }
-"

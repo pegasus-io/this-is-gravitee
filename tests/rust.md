@@ -493,8 +493,7 @@ export PAYLOAD="{
 
 curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
 
-# --- ALSO NEED TO ACCEPT REVIEW
-
+# --- ALSO NEED TO SET REVIEW VALIDATION TO AUTO ACCEPT DEPLOYMENTS
 export GRAVITEE_API_REVIEWS_ACTION=ACCEPT
 export GRAVITEE_API_REVIEWS_MSG="I am $(whoami) -bot and silently reviewed the Gravitee API of UID [${MY_API_GRAVITEE_UID}]"
 export GRAVITEE_API_REVIEWS_MSG="acceptingapireviewfrombot"
@@ -520,6 +519,40 @@ export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/manage
 
 curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
 
+# ---
+# --- ENDPOINT TRUST ALL SERVER CERTIFICATES
+# ---
+# https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/update_6
+#
+
+export URL_APPEL_GRAVITEE_APIM_API="https://apim.gravitee.io/portal/#!/management/apis/${MY_API_GRAVITEE_UID}/groups/default-group/endpoints/default"
+
+
+export EXTENSIVE_PAYLOAD="much too big see official doc"
+# but :
+export PAYLOAD="{ \
+  \"groups\": [ \
+    { \
+      \"name\": \"default-group\", \
+      \"httpClientSslOptions\": { \
+        \"trustAll\": true \
+      } \
+    } \
+  ] \
+}"
+export PAYLOAD="{ \
+  \"groups\": [ \
+    { \
+      \"httpClientSslOptions\": { \
+        \"trustAll\": true \
+      } \
+    } \
+  ] \
+}"
+
+curl -k -X PUT ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
+
+echo "Pour l'instant, et c'est la seule étape que je n'arrive pas à automatiser, je n'arrive pas à changer l'option Trust all SSL etc... : il faut faire ça dès la création de l'API à mon avis, et non en update."
 
 # NOW TESTING ACCESSING GREEN API !!!!!
 # NOW TESTING ACCESSING GREEN API !!!!!
@@ -533,15 +566,14 @@ curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} -H 'Accept: application/json' -H 
 # NOW TESTING ACCESSING GREEN API !!!!!
 
 curl -ivk https://${GRAVITEE_APIM_API_HOST}:443/apiverte  -H "X-Gravitee-Api-Key: ${MY_GREEN_GRAVITEE_API_KEY}"
-
+curl -ivk https://${GRAVITEE_APIM_API_HOST}:443/apiverte  -H "X-Gravitee-Api-Key: ${MY_GREEN_GRAVITEE_API_KEY}" | tail -n 1 | jq .
 
 
 ```
 
 
 * il manque encore :
-  * faire un API start and API deploy / publish
-  * créer un subscribe plan
+  * faire la config "Trust all servers certificates", pour https://apim.gravitee.io/portal/#!/management/apis/${MY_API_GRAVITEE_UID}/groups/default-group/endpoints/default
 
 
 
