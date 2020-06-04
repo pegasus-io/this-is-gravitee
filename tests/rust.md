@@ -74,6 +74,36 @@ curl -X GET -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITE
 
 
 
+# Rebbot Tests de l'API `Gravitee AM`
+
+
+* Scenario :
+  * [`Gravitee APIM`] créer une API, nommee `apiVerte`
+  * [`Gravitee APIM`] créer un subscribe plan, nommé `offreplatinum`, pour l' `apiVerte`.
+  * [`Gravitee AM`] créer un client, de cleint ID `jblClientIDvert`
+  * [`Gravitee APIM`] créer une application , nommee `appliVerte`, associé au client `jblClientIDvert`, avec une sécurisation de type `API_KEY`,
+  * [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
+
+
+* Appeler l'API `Gravitee AM`, avec `curl`, une fois que l'on dispose d'un Token Valide :
+
+```bash
+# https://docs.gravitee.io/am/2.x/management-api/index.html : la belle interface graphique de l'API
+# Obtenir un token 'Gravitee AM API'
+#
+export GRAVITEE_USER_NAME=admin
+export GRAVITEE_USER_PWD=adminadmin
+export GRAVITEE_AM_API_HOST=gravitee-am.pegasusio.io
+export GRAVITEE_AM_API_HOST=am.gravitee.io
+
+curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | jq .
+curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | tee ./my.gravitee-am.api.token.json
+
+export GRAVITEE_AM_API_TOKEN=$(cat ./my.gravitee-am.api.token.json | jq -r '.access_token')
+```
+
+
+
 # Tests de l'API `Gravitee AM`
 
 
@@ -93,7 +123,6 @@ curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVIT
 curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | tee ./my.gravitee-am.api.token.json
 
 export GRAVITEE_AM_API_TOKEN=$(cat ./my.gravitee-am.api.token.json | jq -r '.access_token')
-
 
 # aficher les infos de son propre user gravitee
 curl -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" https://${GRAVITEE_AM_API_HOST}:443/management/user | jq .
@@ -346,7 +375,7 @@ curl  -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}"  -X POST -ivk "https:/
 
 
 ```
-
+* partie proxy dans APIM : aller configurer le Endpoint SSL "Trust all CA" pour le ceert. SSL / TLS de randomuser.me/api
 
 # Annexe : Containers releases
 
