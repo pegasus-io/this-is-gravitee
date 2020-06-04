@@ -70,6 +70,40 @@ export GRAVITEE_APIM_API_TOKEN=$(cat ./my.gravitee-apim.api.token.json | jq -r '
 echo "GRAVITEE_APIM_API_TOKEN=[${GRAVITEE_APIM_API_TOKEN}]"
 
 
+# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++#
+# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++#
+# +++# +++# +++# +++#    OPS START HERE   +++# +++# +++# +++# +++#
+# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++#
+# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++# +++#
+
+
+# +++
+# +++ [`Gravitee APIM`] créer une API, nommee `apiVerte`
+# +++
+
+
+# +++
+# +++ [`Gravitee APIM`] créer un subscribe plan, nommé `offreplatinum`, pour l' `apiVerte`.
+# +++
+
+
+
+# +++
+# +++ [`Gravitee AM`] créer un client, de cleint ID `jblClientIDvert`
+# +++
+
+
+# +++
+# +++ [`Gravitee APIM`] créer une application , nommee `appliVerte`, associé au client `jblClientIDvert`, avec une sécurisation de type `API_KEY`,
+# +++
+
+
+
+# +++
+# +++ [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
+# +++
+
+
 ```
 
 
