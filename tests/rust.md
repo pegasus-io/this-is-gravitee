@@ -127,6 +127,8 @@ curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: a
 
 cat ./my.gravitee-apim.apiVerte.json | jq .
 
+export MY_API_GRAVITEE_UID=$(cat my.gravitee-apim.apiVerte.json | jq .id | awk -F '"' '{print $2}')
+echo "MY_API_GRAVITEE_UID=[${MY_API_GRAVITEE_UID}]"
 
 
 
@@ -137,18 +139,28 @@ cat ./my.gravitee-apim.apiVerte.json | jq .
 # +++ https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/createPlan
 # +
 #
-export SUBSCRIBE_PLAN_NAME=offreplatinum
+export SUBSCRIBE_PLAN_NAME='offreplatinum'
 # could be eihter of "KEY_LESS" "API_KEY" "OAUTH2" "JWT"
-export SUBSCRIBE_PLAN_SECURITY_TYPE=KEY_LESS
+export SUBSCRIBE_PLAN_SECURITY_TYPE='KEY_LESS'
+# could be either of "AUTO" "MANUAL" (in manual mode, someone wil have to click "Accept" button to accept subscription request from subscriber)
+export SUBSCRIBE_PLAN_VALIDATION_MODE='AUTO'
+# could be either of "STAGING" "PUBLISHED" "CLOSED" "DEPRECATED"
+export SUBSCRIBE_PLAN_STATUS='PUBLISHED'
+# could be either of "API" "CATALOG" ("CATALOG" would be for documentation instaed of an API ....?)
+export SUBSCRIBE_PLAN_TYPE='API'
 
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_NAME}/plans"
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_GRAVITEE_UID}/plans"
+
+#  https://docs.gravitee.io/apis/{api}/plans
 export EXTENSIVE_PAYLOAD="{ \
   \"name\": \"${SUBSCRIBE_PLAN_NAME}\", \
-  \"description\": \"subscribe paln gravitee creee par un robot devops de test infra as code\", \
-  \"validation\": \"AUTO\", \
+  \"description\": \"subscribe plan gravitee creee par un robot devops de test infra as code\", \
+  \"validation\": \"${SUBSCRIBE_PLAN_VALIDATION_MODE}\", \
   \"security\": \"${SUBSCRIBE_PLAN_SECURITY_TYPE}\", \
   \"securityDefinition\": \"string\", \
-  \"type\": \"API\", \
-  \"status\": \"STAGING\", \
+  \"type\": \"${SUBSCRIBE_PLAN_TYPE}\", \
+  \"status\": \"${SUBSCRIBE_PLAN_STATUS}\", \
   \"api\": \"${MY_API_NAME}\", \
   \"characteristics\": [ \
     \"string\" \
@@ -199,61 +211,25 @@ export EXTENSIVE_PAYLOAD="{ \
 }"
 
 export PAYLOAD="{ \
-  \"name\": \"string\", \
-  \"description\": \"string\", \
-  \"validation\": \"AUTO\", \
-  \"security\": \"KEY_LESS\", \
-  \"securityDefinition\": \"string\", \
-  \"type\": \"API\", \
-  \"status\": \"STAGING\", \
-  \"api\": \"string\", \
-  \"characteristics\": [ \
-    \"string\" \
-  ], \
-  \"tags\": [ \
-    \"string\" \
-  ], \
-  \"paths\": { \
-    \"property1\": { \
-      \"path\": \"string\", \
-      \"rules\": [ \
-        { \
-          \"methods\": [ \
-            \"CONNECT\" \
-          ], \
-          \"policy\": { \
-            \"name\": \"string\", \
-            \"configuration\": \"string\" \
-          }, \
-          \"description\": \"string\", \
-          \"enabled\": true \
-        } \
-      ] \
-    }, \
-    \"property2\": { \
-      \"path\": \"string\", \
-      \"rules\": [ \
-        { \
-          \"methods\": [ \
-            \"CONNECT\" \
-          ], \
-          \"policy\": { \
-            \"name\": \"string\", \
-            \"configuration\": \"string\" \
-          }, \
-          \"description\": \"string\", \
-          \"enabled\": true \
-        } \
-      ] \
-    } \
-  }, \
-  \"excluded_groups\": [ \
-    \"string\" \
-  ], \
-  \"comment_required\": true, \
-  \"comment_message\": \"string\", \
-  \"selection_rule\": \"string\" \
+\"name\": \"${SUBSCRIBE_PLAN_NAME}\", \
+\"description\": \"subscribe plan gravitee creee par un robot devops de test infra as code\", \
+\"validation\": \"${SUBSCRIBE_PLAN_VALIDATION_MODE}\", \
+\"security\": \"${SUBSCRIBE_PLAN_SECURITY_TYPE}\", \
+\"securityDefinition\": \"string\", \
+\"type\": \"${SUBSCRIBE_PLAN_TYPE}\", \
+\"status\": \"${SUBSCRIBE_PLAN_STATUS}\", \
+\"api\": \"${MY_API_NAME}\" \
 }"
+
+
+
+echo "PAYLOAD=[${PAYLOAD}]"
+
+
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq . | tee ./my.gravitee-apim.offreplatinum.json
+
+cat ./my.gravitee-apim.offreplatinum.json | jq .
+
 
 
 # +++
