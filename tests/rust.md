@@ -118,16 +118,14 @@ export PAYLOAD="{ \
   \"version\": \"${MY_API_VERSION}\", \
   \"description\": \"An APi created by the debvops bots to test out infra as code\", \
   \"contextPath\": \"/apiverte\", \
-  \"endpoint\": \"https://randomuser.me/api\"
+  \"endpoint\": \"https://randomuser.me/api\" \
 }"
 
 echo "PAYLOAD=${PAYLOAD}"
 
-curl -ik -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | tail -n 1 | jq '.' | tee ./my.gravitee-apim.apiVerte.json
-
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq . | tee ./my.gravitee-apim.apiVerte.json
 
 cat ./my.gravitee-apim.apiVerte.json | jq .
-
 
 
 export GRAVITEE_AM_DOMAIN_ID_PROVIDER_CONFIG=$(curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "${URL_APPEL_GRAVITEE_AM_API}" | tail -n 1 | jq '.configuration')
