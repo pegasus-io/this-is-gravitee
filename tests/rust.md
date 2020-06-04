@@ -83,7 +83,8 @@ echo "GRAVITEE_APIM_API_TOKEN=[${GRAVITEE_APIM_API_TOKEN}]"
 
 # +++
 # +++ [`Gravitee APIM`] créer une API, nommee `apiVerte`
-# +++ https://docs.gravitee.io/am/2.x/management-api/index.html
+# +++ https://docs.gravitee.io/apim/1.x/apim_publisherguide_manage_apis.html
+
 
 
 # +++
@@ -117,13 +118,14 @@ curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --d
 # --- ré-afficher les infos du domaine gravitee qui vient d'être créé
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/" | tail -n 1  | jq '.[]'
 
-
+# --- créer le client
 echo "CREATION DU CLIENT"
 echo "Attention, le ClientSecret ne sera visible que maintenant, il ne le sera plus jamais accessible (il faudra détruire le client et le re-créer, pour retrouver une paire complète clinetId / ClientSecret)"
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"clientId\":\"${GRAVITEE_AM_CLIENT_ID}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X POST "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients" | tail -n 1 | jq . | tee ./clientFullInfos.gravitee
 
 cat ./clientFullInfos.gravitee | jq .
 
+# --- #
 # Lister les clients Gravitee
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients" | tail -n 1 | jq .
 
@@ -137,7 +139,8 @@ echo " GRAVITEE_AM_CLIENT_ID=[${GRAVITEE_AM_CLIENT_ID}]"
 echo " GRAVITEE_AM_CLIENT_SECRET=[${GRAVITEE_AM_CLIENT_SECRET}]"
 echo " GRAVITEE_AM_CLIENT_UID=[${GRAVITEE_AM_CLIENT_UID}]"
 
-curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X DELETE "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients/${GRAVITEE_AM_CLIENT_UID}" | tail -n 1 | jq .
+# that's how to delete the same client
+# curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X DELETE "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients/${GRAVITEE_AM_CLIENT_UID}" | tail -n 1 | jq .
 
 
 
@@ -535,4 +538,4 @@ date: Wed, 03 Jun 2020 15:55:43 GMT
 {"message":"Unauthorized","http_status_code":401}
 ```
 
-* J'ssaiie d'exécuter https://docs.gravitee.io/apim/1.x/apim_quickstart_consume.html  after  https://docs.gravitee.io/apim/1.x/apim_quickstart_publish.html  mais pour l'instant je n'y arrive pas.
+* J'essaie d'exécuter https://docs.gravitee.io/apim/1.x/apim_quickstart_consume.html  after  https://docs.gravitee.io/apim/1.x/apim_quickstart_publish.html  mais pour l'instant je n'y arrive pas.
