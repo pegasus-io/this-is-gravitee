@@ -118,20 +118,20 @@ curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --d
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/" | tail -n 1  | jq '.[]'
 
 
+echo "CREATION DU CLIENT"
 echo "Attention, le ClientSecret ne sera visible que maintenant, il ne le sera plus jamais accessible (il faudra détruire le client et le re-créer, pour retrouver une paire complète clinetId / ClientSecret)"
-
-curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"clientId\":\"${GRAVITEE_AM_CLIENT_ID}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X POST "https://${GRAVITEE_AM_API_HOST}:443/management/domains/voyonsdomaine/clients" | tail -n 1 | jq . | tee ./clientFullInfos.gravitee
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"clientId\":\"${GRAVITEE_AM_CLIENT_ID}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X POST "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients" | tail -n 1 | jq . | tee ./clientFullInfos.gravitee
 
 cat ./clientFullInfos.gravitee | jq .
 
 # Lister les clients Gravitee
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients" | tail -n 1 | jq .
 
-export GRAVITEE_AM_CLIENT_ID=$(cat ./clientFullInfos.gravitee | jq .[].clientId | awk -F '"' '{print $2}')
-export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.gravitee | jq .[].clientSecret| awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_ID=$(cat ./clientFullInfos.gravitee | jq .clientId | awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.gravitee | jq .clientSecret| awk -F '"' '{print $2}')
 
 export GRAVITEE_AM_CLIENT_UID=b23b5d79-18e2-405f-bb5d-7918e2f05f21
-export GRAVITEE_AM_CLIENT_UID=$(cat ./clientFullInfos.gravitee | jq .[].id| awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_UID=$(cat ./clientFullInfos.gravitee | jq .id| awk -F '"' '{print $2}')
 
 echo " GRAVITEE_AM_CLIENT_ID=[${GRAVITEE_AM_CLIENT_ID}]"
 echo " GRAVITEE_AM_CLIENT_SECRET=[${GRAVITEE_AM_CLIENT_SECRET}]"
