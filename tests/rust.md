@@ -134,7 +134,126 @@ cat ./my.gravitee-apim.apiVerte.json | jq .
 # +++
 # +++ [`Gravitee APIM`] créer un subscribe plan, nommé `offreplatinum`, pour l' `apiVerte`.
 # +++
+# +++ https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/createPlan
+# +
+#
+export SUBSCRIBE_PLAN_NAME=offreplatinum
+# could be eihter of "KEY_LESS" "API_KEY" "OAUTH2" "JWT"
+export SUBSCRIBE_PLAN_SECURITY_TYPE=KEY_LESS
 
+export EXTENSIVE_PAYLOAD="{ \
+  \"name\": \"${SUBSCRIBE_PLAN_NAME}\", \
+  \"description\": \"subscribe paln gravitee creee par un robot devops de test infra as code\", \
+  \"validation\": \"AUTO\", \
+  \"security\": \"${SUBSCRIBE_PLAN_SECURITY_TYPE}\", \
+  \"securityDefinition\": \"string\", \
+  \"type\": \"API\", \
+  \"status\": \"STAGING\", \
+  \"api\": \"${MY_API_NAME}\", \
+  \"characteristics\": [ \
+    \"string\" \
+  ], \
+  \"tags\": [ \
+    \"string\" \
+  ], \
+  \"paths\": { \
+    \"property1\": { \
+      \"path\": \"string\", \
+      \"rules\": [ \
+        { \
+          \"methods\": [ \
+            \"CONNECT\" \
+          ], \
+          \"policy\": { \
+            \"name\": \"string\", \
+            \"configuration\": \"string\" \
+          }, \
+          \"description\": \"string\", \
+          \"enabled\": true \
+        } \
+      ] \
+    }, \
+    \"property2\": { \
+      \"path\": \"string\", \
+      \"rules\": [ \
+        { \
+          \"methods\": [ \
+            \"CONNECT\" \
+          ], \
+          \"policy\": { \
+            \"name\": \"string\", \
+            \"configuration\": \"string\" \
+          }, \
+          \"description\": \"string\", \
+          \"enabled\": true \
+        } \
+      ] \
+    } \
+  }, \
+  \"excluded_groups\": [ \
+    \"string\" \
+  ], \
+  \"comment_required\": true, \
+  \"comment_message\": \"string\", \
+  \"selection_rule\": \"string\" \
+}"
+
+export PAYLOAD="{ \
+  \"name\": \"string\", \
+  \"description\": \"string\", \
+  \"validation\": \"AUTO\", \
+  \"security\": \"KEY_LESS\", \
+  \"securityDefinition\": \"string\", \
+  \"type\": \"API\", \
+  \"status\": \"STAGING\", \
+  \"api\": \"string\", \
+  \"characteristics\": [ \
+    \"string\" \
+  ], \
+  \"tags\": [ \
+    \"string\" \
+  ], \
+  \"paths\": { \
+    \"property1\": { \
+      \"path\": \"string\", \
+      \"rules\": [ \
+        { \
+          \"methods\": [ \
+            \"CONNECT\" \
+          ], \
+          \"policy\": { \
+            \"name\": \"string\", \
+            \"configuration\": \"string\" \
+          }, \
+          \"description\": \"string\", \
+          \"enabled\": true \
+        } \
+      ] \
+    }, \
+    \"property2\": { \
+      \"path\": \"string\", \
+      \"rules\": [ \
+        { \
+          \"methods\": [ \
+            \"CONNECT\" \
+          ], \
+          \"policy\": { \
+            \"name\": \"string\", \
+            \"configuration\": \"string\" \
+          }, \
+          \"description\": \"string\", \
+          \"enabled\": true \
+        } \
+      ] \
+    } \
+  }, \
+  \"excluded_groups\": [ \
+    \"string\" \
+  ], \
+  \"comment_required\": true, \
+  \"comment_message\": \"string\", \
+  \"selection_rule\": \"string\" \
+}"
 
 
 # +++
