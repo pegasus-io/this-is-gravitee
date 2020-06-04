@@ -98,7 +98,7 @@ export GRAVITEE_AM_USER_PWD=adminadmin
 export GRAVITEE_AM_API_HOST=am.gravitee.io
 
 # -------------------------------------------------------------------------
-# ENV 'Gravitee AM APIM'
+# ENV 'Gravitee APIM API'
 # -------------------------------------------------------------------------
 #
 export GRAVITEE_APIM_USER_NAME=admin
