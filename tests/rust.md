@@ -4,7 +4,82 @@
 
 ## Gravitee `latest` (before relase 3)
 
-# Tests de l'API `Gravitee APIM`
+
+
+###  Rebbot Tests API KEY GRAVITEE (`APIM` + `AM`)
+
+
+* Scenario :
+  * [`Gravitee APIM`] créer une API, nommee `apiVerte`
+  * [`Gravitee APIM`] créer un subscribe plan, nommé `offreplatinum`, pour l' `apiVerte`.
+  * [`Gravitee AM`] créer un client, de cleint ID `jblClientIDvert`
+  * [`Gravitee APIM`] créer une application , nommee `appliVerte`, associé au client `jblClientIDvert`, avec une sécurisation de type `API_KEY`,
+  * [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
+
+
+* implémentation :
+
+```bash
+
+# -------------------------------------------------------------------------
+# ENV 'Gravitee AM API'
+# -------------------------------------------------------------------------
+#
+export GRAVITEE_AM_USER_NAME=admin
+export GRAVITEE_AM_USER_PWD=adminadmin
+export GRAVITEE_AM_API_HOST=am.gravitee.io
+
+
+# ---
+# Obtenir un token 'Gravitee AM API'
+# ---
+
+curl -X POST -k  -u ${GRAVITEE_AM_USER_NAME}:${GRAVITEE_AM_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | jq .
+curl -X POST -k  -u ${GRAVITEE_AM_USER_NAME}:${GRAVITEE_AM_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | tee ./my.gravitee-am.api.token.json
+
+export GRAVITEE_AM_API_TOKEN=$(cat ./my.gravitee-am.api.token.json | jq -r '.access_token')
+
+echo "GRAVITEE_AM_API_TOKEN=[${GRAVITEE_AM_API_TOKEN}]"
+
+
+# -------------------------------------------------------------------------
+# ENV 'Gravitee APIM API'
+# -------------------------------------------------------------------------
+#
+export GRAVITEE_APIM_USER_NAME=admin
+export GRAVITEE_APIM_USER_PWD=admin
+export GRAVITEE_APIM_API_HOST=apim.gravitee.io
+
+# ---
+# Obtenir un token 'Gravitee APIM API'
+# ---
+curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | jq .
+curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | tee ./my.gravitee-apim.api.token.json
+
+
+# --
+# MAIS ATTENTION ! LE TOKEN EXPIRE TRES RAPIDEMENT !!! :) dans ce cas, faire un logout / login :
+#
+curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/logout | jq .
+curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | tee ./my.gravitee-apim.api.token.json
+
+# ça, ça marche : j'ai bien obtenu un [GRAVITEE_APIM_API_TOKEN]
+#
+# --
+export GRAVITEE_APIM_API_TOKEN=$(cat ./my.gravitee-apim.api.token.json | jq -r '.token')
+echo "GRAVITEE_APIM_API_TOKEN=[${GRAVITEE_APIM_API_TOKEN}]"
+
+
+```
+
+
+
+
+
+
+
+
+### Tests de l'API `Gravitee APIM`
 
 
 * Scénario `User Story` complète  :
@@ -74,53 +149,7 @@ curl -X GET -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITE
 
 
 
-# Rebbot Tests de l'API `Gravitee AM`
-
-
-* Scenario :
-  * [`Gravitee APIM`] créer une API, nommee `apiVerte`
-  * [`Gravitee APIM`] créer un subscribe plan, nommé `offreplatinum`, pour l' `apiVerte`.
-  * [`Gravitee AM`] créer un client, de cleint ID `jblClientIDvert`
-  * [`Gravitee APIM`] créer une application , nommee `appliVerte`, associé au client `jblClientIDvert`, avec une sécurisation de type `API_KEY`,
-  * [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
-
-
-* implémentation :
-
-```bash
-
-# -------------------------------------------------------------------------
-# ENV 'Gravitee AM API'
-# -------------------------------------------------------------------------
-#
-export GRAVITEE_AM_USER_NAME=admin
-export GRAVITEE_AM_USER_PWD=adminadmin
-export GRAVITEE_AM_API_HOST=am.gravitee.io
-
-# -------------------------------------------------------------------------
-# ENV 'Gravitee APIM API'
-# -------------------------------------------------------------------------
-#
-export GRAVITEE_APIM_USER_NAME=admin
-export GRAVITEE_APIM_USER_PWD=admin
-export GRAVITEE_APIM_API_HOST=apim.gravitee.io
-
-# ---
-# Obtenir un token 'Gravitee AM API'
-# ---
-
-curl -X POST -k  -u ${GRAVITEE_AM_USER_NAME}:${GRAVITEE_AM_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | jq .
-curl -X POST -k  -u ${GRAVITEE_AM_USER_NAME}:${GRAVITEE_AM_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | tee ./my.gravitee-am.api.token.json
-
-export GRAVITEE_AM_API_TOKEN=$(cat ./my.gravitee-am.api.token.json | jq -r '.access_token')
-
-echo "GRAVITEE_AM_API_TOKEN=[${GRAVITEE_AM_API_TOKEN}]"
-
-```
-
-
-
-# Tests de l'API `Gravitee AM`
+### Tests de l'API `Gravitee AM`
 
 
 * Appeler l'API `Gravitee AM`, avec `curl`, une fois que l'on dispose d'un Token Valide :
