@@ -141,7 +141,7 @@ echo "MY_API_GRAVITEE_UID=[${MY_API_GRAVITEE_UID}]"
 #
 export SUBSCRIBE_PLAN_NAME='offreplatinum'
 # could be eihter of "KEY_LESS" "API_KEY" "OAUTH2" "JWT"
-export SUBSCRIBE_PLAN_SECURITY_TYPE='KEY_LESS'
+export SUBSCRIBE_PLAN_SECURITY_TYPE='API_KEY'
 # could be either of "AUTO" "MANUAL" (in manual mode, someone wil have to click "Accept" button to accept subscription request from subscriber)
 export SUBSCRIBE_PLAN_VALIDATION_MODE='AUTO'
 # could be either of "STAGING" "PUBLISHED" "CLOSED" "DEPRECATED"
@@ -230,7 +230,8 @@ curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: a
 
 cat ./my.gravitee-apim.offreplatinum.json | jq .
 
-
+export SUBSCRIBE_PLAN_UID=$(cat ./my.gravitee-apim.offreplatinum.json | jq .id | awk -F '"' '{print $2}')
+echo "SUBSCRIBE_PLAN_UID=[${SUBSCRIBE_PLAN_UID}]"
 
 # +++
 # +++ [`Gravitee AM`] créer un client, de cleint ID `jblClientIDvert`
@@ -348,6 +349,7 @@ echo "PAYLOAD=${PAYLOAD}"
 curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq . | tee ./my.gravitee-apim.appliVerte.json
 
 cat ./my.gravitee-apim.appliVerte.json | jq .
+export GRAVITEE_APPLICATION_UID=$(cat ./my.gravitee-apim.appliVerte.json | jq .id | awk -F '"' '{print $2}')
 
 # +++
 # +++ [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
@@ -355,8 +357,188 @@ cat ./my.gravitee-apim.appliVerte.json | jq .
 # +++ https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/createSubscription_1
 # +++
 
+# https://docs.gravitee.io/apis/{api}/subscriptions
+export MY_API_NAME=$MY_API_NAME
+export MY_API_VERSION=$MY_API_VERSION
+export MY_API_GRAVITEE_UID=$(cat my.gravitee-apim.apiVerte.json | jq .id | awk -F '"' '{print $2}')
+echo "MY_API_GRAVITEE_UID=[${MY_API_GRAVITEE_UID}]"
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_GRAVITEE_UID}/subscriptions?application=${GRAVITEE_APPLICATION_UID}&plan=${SUBSCRIBE_PLAN_UID}"
+
+# export SUBSCRIBE_PLAN_UID=$(cat ./my.gravitee-apim.offreplatinum.json | jq .id | awk -F '"' '{print $2}')
+# echo "SUBSCRIBE_PLAN_UID=[${SUBSCRIBE_PLAN_UID}]"
+
+
+
+export EXTENSIVE_PAYLOAD="{ \
+  \"id\": \"jblDevopsTestSouscriptionVerte\", \
+  \"api\": { \
+    \"id\": \"${MY_API_GRAVITEE_UID}\", \
+    \"name\": \"${MY_API_NAME}\", \
+    \"version\": \"${MY_API_VERSION}\", \
+    \"owner\": { \
+      \"id\": \"string\", \
+      \"displayName\": \"string\" \
+    } \
+  }, \
+  \"plan\": { \
+    \"id\": \"${SUBSCRIBE_PLAN_UID}\", \
+    \"name\": \"${SUBSCRIBE_PLAN_NAME}\", \
+    \"security\": \"KEY_LESS\" \
+  }, \
+  \"application\": { \
+    \"id\": \"string\", \
+    \"name\": \"string\", \
+    \"type\": \"string\", \
+    \"owner\": { \
+      \"id\": \"string\", \
+      \"displayName\": \"string\" \
+    } \
+  }, \
+  \"status\": \"PENDING\", \
+  \"request\": \"string\", \
+  \"reason\": \"string\", \
+  \"processed_at\": 0, \
+  \"processed_by\": \"string\", \
+  \"subscribed_by\": { \
+    \"id\": \"string\", \
+    \"displayName\": \"string\" \
+  }, \
+  \"starting_at\": 0, \
+  \"ending_at\": 0, \
+  \"created_at\": 0, \
+  \"updated_at\": 0, \
+  \"closed_at\": 0, \
+  \"paused_at\": 0, \
+  \"client_id\": \"${GRAVITEE_AM_CLIENT_ID}\" \
+}"
+
+export PAYLOAD="{ \
+  \"id\": \"jblDevopsTestSouscriptionVerte\", \
+  \"api\": { \
+    \"id\": \"${MY_API_GRAVITEE_UID}\", \
+    \"name\": \"${MY_API_NAME}\", \
+    \"version\": \"${MY_API_VERSION}\" \
+  }, \
+  \"plan\": { \
+    \"id\": \"${SUBSCRIBE_PLAN_UID}\", \
+    \"name\": \"${SUBSCRIBE_PLAN_NAME}\", \
+    \"security\": \"KEY_LESS\" \
+  }, \
+  \"client_id\": \"${GRAVITEE_AM_CLIENT_ID}\" \
+}"
+
+echo "PAYLOAD=${PAYLOAD}"
+
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq . | tee ./my.gravitee-apim.souscriptionVerte.json
+
+cat ./my.gravitee-apim.souscriptionVerte.json | jq .
+
+# Ok, arrivé là, la souscription est créée, mais l'on n'a pas encore eut l'API Key dans la réponse JSON [./my.gravitee-apim.souscriptionVerte.json]
+# Cependant, l'API Key a déjà été créée
+curl -k -X GET ${URL_APPEL_GRAVITEE_APIM_API} -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
+
+
+
+# On affiche le subscribe plan pour obtenir l'API KEY qui a été créée
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_GRAVITEE_UID}/subscriptions/${SUBSCRIBE_PLAN_UID}?api=${MY_API_GRAVITEE_UID}&subcription=${SUBSCRIBE_PLAN_UID}"
+curl -k -X GET ${URL_APPEL_GRAVITEE_APIM_API} -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
+
+
+# On affiche toutes les API KEYS de la souscriptionVerte qui a été créée
+# https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/listApiKeysForSubscription
+
+export SUBSCRIPTION_UID=$(cat ./my.gravitee-apim.souscriptionVerte.json | jq .id | awk -F '"' '{print $2}')
+echo "SUBSCRIPTION_UID=[${SUBSCRIPTION_UID}]"
+export MY_API_GRAVITEE_UID=$(cat my.gravitee-apim.apiVerte.json | jq .id | awk -F '"' '{print $2}')
+echo "MY_API_GRAVITEE_UID=[${MY_API_GRAVITEE_UID}]"
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_GRAVITEE_UID}/subscriptions/${SUBSCRIPTION_UID}/keys?api=${MY_API_GRAVITEE_UID}&subcription=${SUBSCRIPTION_UID}"
+
+curl -k -X GET ${URL_APPEL_GRAVITEE_APIM_API} -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
+
+export MY_GREEN_GRAVITEE_API_KEY=$(curl -k -X GET ${URL_APPEL_GRAVITEE_APIM_API} -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .[0].key | awk -F '"' '{print $2}')
+echo "MY_GREEN_GRAVITEE_API_KEY=[${MY_GREEN_GRAVITEE_API_KEY}]"
+
+
+
+
+# Last, but not least, before I can finally hit py green API, I have to deploy API, and start the api
+# https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/deployAPI
+# https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/doLifecycleAction  ACTION request parameter => START
+
+# --- DEPLOY API
+export MY_API_GRAVITEE_UID=$(cat my.gravitee-apim.apiVerte.json | jq .id | awk -F '"' '{print $2}')
+echo "MY_API_GRAVITEE_UID=[${MY_API_GRAVITEE_UID}]"
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_GRAVITEE_UID}/deploy?api=${MY_API_GRAVITEE_UID}"
+
+
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
+
+# ---
+# --- RREVIEW API before STARTING IT
+# --- https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/doReviewAction
+#
+export MY_API_GRAVITEE_UID=$(cat my.gravitee-apim.apiVerte.json | jq .id | awk -F '"' '{print $2}')
+echo "MY_API_GRAVITEE_UID=[${MY_API_GRAVITEE_UID}]"
+# could be  either "ASK" or "ACCEPT"
+export GRAVITEE_API_REVIEWS_ACTION=ASK
+export GRAVITEE_API_REVIEWS_MSG="I am $(whoami) -bot and silently reviewed the Gravitee API of UID [${MY_API_GRAVITEE_UID}]"
+export GRAVITEE_API_REVIEWS_MSG="simplereviewmessageforurlencoding"
+
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_GRAVITEE_UID}/reviews?api=${MY_API_GRAVITEE_UID}&action=${GRAVITEE_API_REVIEWS_ACTION}"
+
+# That'"s going to be the reviewer's (me) comment"
+export PAYLOAD="{
+  \"message\": \"${GRAVITEE_API_REVIEWS_MSG}\"
+}"
+
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
+
+# --- ALSO NEED TO ACCEPT REVIEW
+
+export GRAVITEE_API_REVIEWS_ACTION=ACCEPT
+export GRAVITEE_API_REVIEWS_MSG="I am $(whoami) -bot and silently reviewed the Gravitee API of UID [${MY_API_GRAVITEE_UID}]"
+export GRAVITEE_API_REVIEWS_MSG="acceptingapireviewfrombot"
+
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_GRAVITEE_UID}/reviews?api=${MY_API_GRAVITEE_UID}&action=${GRAVITEE_API_REVIEWS_ACTION}"
+
+# That'"s going to be the reviewer's (me) comment"
+export PAYLOAD="{
+  \"message\": \"${GRAVITEE_API_REVIEWS_MSG}\"
+}"
+
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
+
+
+
+# --- START API
+export MY_API_GRAVITEE_UID=$(cat my.gravitee-apim.apiVerte.json | jq .id | awk -F '"' '{print $2}')
+echo "MY_API_GRAVITEE_UID=[${MY_API_GRAVITEE_UID}]"
+# could be either START or STOP
+export GRAVITEE_API_LICYCLE_ACTION=START
+export URL_APPEL_GRAVITEE_APIM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/apis/${MY_API_GRAVITEE_UID}?api=${MY_API_GRAVITEE_UID}&action=${GRAVITEE_API_LICYCLE_ACTION}"
+
+
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
+
+
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+# NOW TESTING ACCESSING GREEN API !!!!!
+
+curl -ivk https://${GRAVITEE_APIM_API_HOST}:443/apiverte  -H "X-Gravitee-Api-Key: ${MY_GREEN_GRAVITEE_API_KEY}"
+
+
 
 ```
+
+
 * il manque encore :
   * faire un API start and API deploy / publish
   * créer un subscribe plan
