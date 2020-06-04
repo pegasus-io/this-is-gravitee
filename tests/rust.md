@@ -8,6 +8,10 @@
 
 ###  Rebbot Tests API KEY GRAVITEE (`APIM` + `AM`)
 
+* https://docs.gravitee.io/apim/1.x/apim_quickstart_consume.html
+* https://docs.gravitee.io/apim/1.x/apim_quickstart_publish.html.
+* https://docs.gravitee.io/am/2.x/
+
 
 * Scenario :
   * [`Gravitee APIM`] créer une API, nommee `apiVerte`
@@ -79,7 +83,7 @@ echo "GRAVITEE_APIM_API_TOKEN=[${GRAVITEE_APIM_API_TOKEN}]"
 
 # +++
 # +++ [`Gravitee APIM`] créer une API, nommee `apiVerte`
-# +++
+# +++ https://docs.gravitee.io/am/2.x/management-api/index.html
 
 
 # +++
@@ -90,7 +94,60 @@ echo "GRAVITEE_APIM_API_TOKEN=[${GRAVITEE_APIM_API_TOKEN}]"
 
 # +++
 # +++ [`Gravitee AM`] créer un client, de cleint ID `jblClientIDvert`
-# +++
+# +++ https://docs.gravitee.io/am/2.x/
+
+# --- créer un "client" gravitee, nécessite la création d'un "security domain" au sens de [Gravitee AM]
+# Client ID du client, derrière est retourné le client secret
+export GRAVITEE_AM_CLIENT_ID=jblClientIDvert
+export GRAVITEE_SEC_DOMAIN=domainevert
+
+
+# Lister les "security domains", sortes de realms , pour les "clients" au sens de Gravitee AM : Un même domaine peut être associé à plusieurs clients.
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains" | tail -n 1 | jq .
+
+# --- créer un "domaine" gravitee
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X POST "https://${GRAVITEE_AM_API_HOST}:443/management/domains"
+
+# --- ré-afficher les infos du domaine gravitee qui vient d'être créé
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/" | tail -n 1  | jq '.[]'
+
+# --- enabling gravitee security domain "voyonsdomaine"
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\", "enabled" : true}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X PUT "https://${GRAVITEE_AM_API_HOST}:443/management/domains/voyonsdomaine"
+
+# --- ré-afficher les infos du domaine gravitee qui vient d'être créé
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"name\":\"${GRAVITEE_SEC_DOMAIN}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/" | tail -n 1  | jq '.[]'
+
+
+echo "Attention, le ClientSecret ne sera visible que maintenant, il ne le sera plus jamais accessible (il faudra détruire le client et le re-créer, pour retrouver une paire complète clinetId / ClientSecret)"
+
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"clientId\":\"${GRAVITEE_AM_CLIENT_ID}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X POST "https://${GRAVITEE_AM_API_HOST}:443/management/domains/voyonsdomaine/clients" | tail -n 1 | jq . | tee ./clientFullInfos.gravitee
+
+cat ./clientFullInfos.gravitee | jq .
+
+# Lister les clients Gravitee
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients" | tail -n 1 | jq .
+
+export GRAVITEE_AM_CLIENT_ID=$(cat ./clientFullInfos.gravitee | jq .[].clientId | awk -F '"' '{print $2}')
+export GRAVITEE_AM_CLIENT_SECRET=$(cat ./clientFullInfos.gravitee | jq .[].clientSecret| awk -F '"' '{print $2}')
+
+export GRAVITEE_AM_CLIENT_UID=b23b5d79-18e2-405f-bb5d-7918e2f05f21
+export GRAVITEE_AM_CLIENT_UID=$(cat ./clientFullInfos.gravitee | jq .[].id| awk -F '"' '{print $2}')
+
+echo " GRAVITEE_AM_CLIENT_ID=[${GRAVITEE_AM_CLIENT_ID}]"
+echo " GRAVITEE_AM_CLIENT_SECRET=[${GRAVITEE_AM_CLIENT_SECRET}]"
+echo " GRAVITEE_AM_CLIENT_UID=[${GRAVITEE_AM_CLIENT_UID}]"
+
+curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X DELETE "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients/${GRAVITEE_AM_CLIENT_UID}" | tail -n 1 | jq .
+
+
+
+
+
+
+
+
+
+
 
 
 # +++
@@ -228,7 +285,7 @@ curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --d
 export GRAVITEE_AM_CLIENT_ID=jblClientID
 export GRAVITEE_SEC_DOMAIN=voyonsdomaine
 
-echo "Attention, le ClientSecret ne sera visible que mainrtenant, il ne le sera plus jamais accessible (il faudra détruire le client et le re-créer, pour retrouver une paire complète clinetId / ClientSecret)"
+echo "Attention, le ClientSecret ne sera visible que maintenant, il ne le sera plus jamais accessible (il faudra détruire le client et le re-créer, pour retrouver une paire complète clinetId / ClientSecret)"
 
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' --data "{\"clientId\":\"${GRAVITEE_AM_CLIENT_ID}\"}" -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X POST "https://${GRAVITEE_AM_API_HOST}:443/management/domains/voyonsdomaine/clients" | tail -n 1 | jq . | tee ./clientFullInfos.gravitee
 
@@ -245,7 +302,7 @@ export GRAVITEE_AM_CLIENT_UID=$(cat ./clientFullInfos.gravitee | jq .[].id| awk 
 
 echo " GRAVITEE_AM_CLIENT_ID=[${GRAVITEE_AM_CLIENT_ID}]"
 echo " GRAVITEE_AM_CLIENT_UID=[${GRAVITEE_AM_CLIENT_UID}]"
-echo " GRAVITEE_CLIENT_SECRET=[${GRAVITEE_CLIENT_SECRET}]"
+echo " GRAVITEE_AM_CLIENT_SECRET=[${GRAVITEE_AM_CLIENT_SECRET}]"
 
 curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X DELETE "https://${GRAVITEE_AM_API_HOST}:443/management/domains/${GRAVITEE_SEC_DOMAIN}/clients/${GRAVITEE_AM_CLIENT_UID}" | tail -n 1 | jq .
 
