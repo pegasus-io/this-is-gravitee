@@ -203,8 +203,50 @@ echo " GRAVITEE_AM_CLIENT_UID=[${GRAVITEE_AM_CLIENT_UID}]"
 # +++
 # +++ https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/createApplication
 # +++
+export GRAVITEE_APPLICATION_NAME="appliVerte"
 
+export EXTENSIVE_PAYLOAD="{ \
+  \"name\": \"${GRAVITEE_APPLICATION_NAME}\", \
+  \"description\": \"Test devops creation d\'une application'\", \
+  \"settings\": { \
+    \"app\": { \
+      \"type\": \"string\", \
+      \"client_id\": \"string\" \
+    }, \
+    \"oauth\": { \
+      \"client_id\": \"string\", \
+      \"client_secret\": \"string\", \
+      \"redirect_uris\": [ \
+        \"string\" \
+      ], \
+      \"client_uri\": \"string\", \
+      \"logo_uri\": \"string\", \
+      \"response_types\": [ \
+        \"string\" \
+      ], \
+      \"grant_types\": [ \
+        \"string\" \
+      ], \
+      \"application_type\": \"string\", \
+      \"renew_client_secret_supported\": true \
+    } \
+  }, \
+  \"type\": \"string\", \
+  \"clientId\": \"string\", \
+  \"groups\": [ \
+    \"string\" \
+  ] \
+}"
+export PAYLOAD="{ \
+  \"name\": \"${GRAVITEE_APPLICATION_NAME}\", \
+  \"description\": \"Test devops creation d\'une application'\"
+}"
 
+echo "PAYLOAD=${PAYLOAD}"
+
+curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq . | tee ./my.gravitee-apim.apiVerte.json
+
+cat ./my.gravitee-apim.apiVerte.json | jq .
 
 # +++
 # +++ [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
