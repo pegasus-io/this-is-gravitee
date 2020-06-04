@@ -128,7 +128,6 @@ curl -k -X POST ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: a
 cat ./my.gravitee-apim.apiVerte.json | jq .
 
 
-export GRAVITEE_AM_DOMAIN_ID_PROVIDER_CONFIG=$(curl -ivk  -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_AM_API_TOKEN}" -X GET "${URL_APPEL_GRAVITEE_AM_API}" | tail -n 1 | jq '.configuration')
 
 
 
@@ -141,7 +140,8 @@ export GRAVITEE_AM_DOMAIN_ID_PROVIDER_CONFIG=$(curl -ivk  -H 'Accept: applicatio
 # +++
 # +++ [`Gravitee AM`] créer un client, de cleint ID `jblClientIDvert`
 # +++ https://docs.gravitee.io/am/2.x/
-
+# +++ https://docs.gravitee.io/am/2.x/management-api/index.html
+# +++
 # --- créer un "client" gravitee, nécessite la création d'un "security domain" au sens de [Gravitee AM]
 # Client ID du client, derrière est retourné le client secret
 export GRAVITEE_AM_CLIENT_ID=jblClientIDvert
@@ -199,13 +199,17 @@ echo " GRAVITEE_AM_CLIENT_UID=[${GRAVITEE_AM_CLIENT_UID}]"
 
 
 # +++
-# +++ [`Gravitee APIM`] créer une application , nommee `appliVerte`, associé au client `jblClientIDvert`, avec une sécurisation de type `API_KEY`,
+# +++ [`Gravitee APIM`] créer une application , nommee `appliVerte`, associée au client `jblClientIDvert`, avec une sécurisation de type `API_KEY`,
+# +++
+# +++ https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/createApplication
 # +++
 
 
 
 # +++
 # +++ [`Gravitee APIM`] avec l'application `appliVerte`, souscrire au subscribe plan `offreplatinum`, de l' `apiVerte`
+# +++
+# +++ https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/createSubscription_1
 # +++
 
 
