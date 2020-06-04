@@ -57,15 +57,15 @@ export GRAVITEE_APIM_API_HOST=apim.gravitee.io
 # ---
 # Obtenir un token 'Gravitee APIM API'
 # ---
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | jq .
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | tee ./my.gravitee-apim.api.token.json
+curl -X POST -k  -u ${GRAVITEE_APIM_USER_NAME}:${GRAVITEE_APIM_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | jq .
+curl -X POST -k  -u ${GRAVITEE_APIM_USER_NAME}:${GRAVITEE_APIM_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | tee ./my.gravitee-apim.api.token.json
 
 
 # --
 # MAIS ATTENTION ! LE TOKEN EXPIRE TRES RAPIDEMENT !!! :) dans ce cas, faire un logout / login :
 #
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/logout | jq .
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | tee ./my.gravitee-apim.api.token.json
+curl -X POST -k  -u ${GRAVITEE_APIM_USER_NAME}:${GRAVITEE_APIM_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/logout | jq .
+curl -X POST -k  -u ${GRAVITEE_APIM_USER_NAME}:${GRAVITEE_APIM_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | tee ./my.gravitee-apim.api.token.json
 
 # ça, ça marche : j'ai bien obtenu un [GRAVITEE_APIM_API_TOKEN]
 #
