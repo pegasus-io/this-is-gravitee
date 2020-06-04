@@ -88,18 +88,34 @@ curl -X GET -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITE
 * implémentation :
 
 ```bash
-# https://docs.gravitee.io/am/2.x/management-api/index.html : la belle interface graphique de l'API
-# Obtenir un token 'Gravitee AM API'
+
+# -------------------------------------------------------------------------
+# ENV 'Gravitee AM API'
+# -------------------------------------------------------------------------
 #
-export GRAVITEE_USER_NAME=admin
-export GRAVITEE_USER_PWD=adminadmin
-export GRAVITEE_AM_API_HOST=gravitee-am.pegasusio.io
+export GRAVITEE_AM_USER_NAME=admin
+export GRAVITEE_AM_USER_PWD=adminadmin
 export GRAVITEE_AM_API_HOST=am.gravitee.io
 
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | jq .
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | tee ./my.gravitee-am.api.token.json
+# -------------------------------------------------------------------------
+# ENV 'Gravitee AM APIM'
+# -------------------------------------------------------------------------
+#
+export GRAVITEE_APIM_USER_NAME=admin
+export GRAVITEE_APIM_USER_PWD=admin
+export GRAVITEE_APIM_API_HOST=apim.gravitee.io
+
+# ---
+# Obtenir un token 'Gravitee AM API'
+# ---
+
+curl -X POST -k  -u ${GRAVITEE_AM_USER_NAME}:${GRAVITEE_AM_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | jq .
+curl -X POST -k  -u ${GRAVITEE_AM_USER_NAME}:${GRAVITEE_AM_USER_PWD}  https://${GRAVITEE_AM_API_HOST}:443/admin/token | tee ./my.gravitee-am.api.token.json
 
 export GRAVITEE_AM_API_TOKEN=$(cat ./my.gravitee-am.api.token.json | jq -r '.access_token')
+
+echo "GRAVITEE_AM_API_TOKEN=[${GRAVITEE_AM_API_TOKEN}]"
+
 ```
 
 
