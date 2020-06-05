@@ -5,8 +5,7 @@
 ## Gravitee `latest` (before relase 3)
 
 
-
-###  Rebbot Tests API KEY GRAVITEE (`APIM` + `AM`)
+###  An API KEY for your API, with GRAVITEE (`APIM` + `AM`) _(Fully tested and operational)_
 
 * https://docs.gravitee.io/apim/1.x/apim_quickstart_consume.html
 * https://docs.gravitee.io/apim/1.x/apim_quickstart_publish.html.
@@ -571,86 +570,56 @@ curl -ivk https://${GRAVITEE_APIM_API_HOST}:443/apiverte  -H "X-Gravitee-Api-Key
 
 ```
 
+* Ok, so the last thing I do not know how to automate is this (this configuration parameter makes gravitee trust all certificates, of the backend API GRravtiee calls on your behalf) :
 
-* il manque encore :
-  * faire la config "Trust all servers certificates", pour https://apim.gravitee.io/portal/#!/management/apis/${MY_API_GRAVITEE_UID}/groups/default-group/endpoints/default
+  * scrennshot of how I do that with Web UI :
 
+![Trust All SSL](https://github.com/Jean-Baptiste-Lasselle/for-fellow-developers/raw/master/docuementation/impr.ecrans/gravitee/Firefox_Screenshot_2020-06-04T22-01-48.930Z.png)
 
-
-
-
-
-### Tests de l'API `Gravitee APIM`
-
-
-* Scénario `User Story` complète  :
+  * and that's how it shoudl be done (more or less, but still fails) :
 
 ```bash
-# https://docs.gravitee.io/am/2.x/management-api/index.html : la belle interface graphique de l'API
-# Obtenir un token 'Gravitee AM API'
-#
 # ---
-# 192.168.1.28 am.gravitee.io apim.gravitee.io gravitee.io
+# --- ENDPOINT TRUST ALL SERVER CERTIFICATES
 # ---
+# https://docs.gravitee.io/apim/1.x/management-api/1.30/#operation/update_6
 #
-export GRAVITEE_USER_NAME=admin
-export GRAVITEE_USER_PWD=admin
-export GRAVITEE_APIM_API_HOST=apim.gravitee.io
 
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | jq .
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | tee ./my.gravitee-apim.api.token.json
+export URL_APPEL_GRAVITEE_APIM_API="https://apim.gravitee.io/portal/#!/management/apis/${MY_API_GRAVITEE_UID}/groups/default-group/endpoints/default"
 
 
-# --
-# MAIS ATTENTION ! LE TOKEN EXPIRE TRES RAPIDEMENT !!! :) dans ce cas, faire un logout / login :
-#
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/logout | jq .
-curl -X POST -k  -u ${GRAVITEE_USER_NAME}:${GRAVITEE_USER_PWD}  https://${GRAVITEE_APIM_API_HOST}:443/management/user/login | tee ./my.gravitee-apim.api.token.json
+export EXTENSIVE_PAYLOAD="much too big see official doc"
+# but :
+export PAYLOAD="{ \
+  \"groups\": [ \
+    { \
+      \"name\": \"default-group\", \
+      \"httpClientSslOptions\": { \
+        \"trustAll\": true \
+      } \
+    } \
+  ] \
+}"
+export PAYLOAD="{ \
+  \"groups\": [ \
+    { \
+      \"httpClientSslOptions\": { \
+        \"trustAll\": true \
+      } \
+    } \
+  ] \
+}"
 
-# ça, ça marche : j'ai bien obtenu un [GRAVITEE_APIM_API_TOKEN]
-#
-# --
-export GRAVITEE_APIM_API_TOKEN=$(cat ./my.gravitee-apim.api.token.json | jq -r '.token')
-echo "GRAVITEE_APIM_API_TOKEN=[${GRAVITEE_APIM_API_TOKEN}]"
+curl -k -X PUT ${URL_APPEL_GRAVITEE_APIM_API} --data "${PAYLOAD}" -H 'Accept: application/json' -H 'Content-Type: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" | jq .
 
-
-# --
-# ci dessous ça marche :
-# Comment afficher les détails d'info les plus fins, pour
-# un utilisateur donné, d'une API gérée par [Gravtiee APIM]
-#
-export URL_APPEL_GRAVITEE_AM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/users/${GRAVITEE_USER_NAME}"
-curl -X GET -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" "${URL_APPEL_GRAVITEE_AM_API}" | tee apporte| jq .
-echo ''
-echo " So the [${GRAVITEE_USER_NAME}] user is not a user, as this [Gravitee AIM API] Endpoints understand"
-echo " Those are the users of the APIs managed by [Gravitee APIM]"
-echo ''
-
-# --
-# ci-dessous : comment lister les utilisateurs d'API gérées par [Gravitee APIM].
-export URL_APPEL_GRAVITEE_AM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/users"
-curl -X GET -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" "${URL_APPEL_GRAVITEE_AM_API}" | tee apporte| jq .
-
-# --
-# ci dessous : comment lister les ressources externes configurées, dispnibles.
-export URL_APPEL_GRAVITEE_AM_API="https://${GRAVITEE_APIM_API_HOST}:443/management/resources"
-
-curl -X GET -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" "${URL_APPEL_GRAVITEE_AM_API}" | tee apporte | jq .
-
-# --
-# ci dessous : comment lister les ressources externes configurées, dispnibles.
-export URL_APPEL_GRAVITEE_AM_API="https://${GRAVITEE_APIM_API_HOST}:443/platform/analytics"
-
-curl -X GET -k -H 'Accept: application/json' -H "Authorization: Bearer ${GRAVITEE_APIM_API_TOKEN}" "${URL_APPEL_GRAVITEE_AM_API}" | tee apporte | jq .
-
+echo "Pour l'instant, et c'est la seule étape que je n'arrive pas à automatiser, je n'arrive pas à changer l'option Trust all SSL etc... : il faut faire ça dès la création de l'API à mon avis, et non en update."
 
 ```
 
+* never the less, what we need, is being able to create en the fly an application, for every new customer / consumer of my API.
 
 
-
-
-### Tests de l'API `Gravitee AM`
+### Tests de l'API `Gravitee AM` :  Oauth2 et OpenID COnnect, sur vos API _(Unfinished)_
 
 
 * Appeler l'API `Gravitee AM`, avec `curl`, une fois que l'on dispose d'un Token Valide :
