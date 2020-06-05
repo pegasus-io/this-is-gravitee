@@ -32,6 +32,14 @@ git checkout ${DESIRED_VERSION}
 ./reproduce_gravitee_latest_before_3.sh
 # docker-compose down --rmi all && docker system prune -f --all && docker system prune -f --volumes && cd && sudo rm -fr ~/gravitee-earthling-issues
 ```
+* Once done, add to your `/etc/hosts` :
+
+```
+<IP Of YOUR DOCKER COMPOSE MACHINE>  am.gravite.io apim.gravitee.io
+```
+* Now you can access :
+  *  https://am.gravitee.io  username `admin`, password `adminadmin`
+  *  https://apim.gravitee.io/portal  username `admin`, password `admin`
 
 ### `Gravitee` release 3
 
