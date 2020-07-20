@@ -1,4 +1,15 @@
-[![Build Status](https://cloud.drone.io/api/badges/pegasus-io/this-is-gravitee/status.svg)](https://cloud.drone.io/pegasus-io/this-is-gravitee)
+
+
+
+* _CI Build status_ for the releases (on the `master` branch) :
+
+[![Build Status](https://cloud.drone.io/api/badges/pegasus-io/this-is-gravitee/status.svg?ref=refs/heads/master)](https://cloud.drone.io/pegasus-io/this-is-gravitee)
+
+* _CI Build status_ for the work in progress (on the `develop` branch) :
+
+[![Build Status](https://cloud.drone.io/api/badges/pegasus-io/this-is-gravitee/status.svg?ref=refs/heads/develop)](https://cloud.drone.io/pegasus-io/this-is-gravitee)
+
+
 
 # Gravitee On Earth
 
