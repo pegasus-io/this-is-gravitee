@@ -1,3 +1,16 @@
+
+
+
+* _CI Build status_ for the releases (on the `master` branch) :
+
+[![Build Status](https://cloud.drone.io/api/badges/pegasus-io/this-is-gravitee/status.svg?ref=refs/heads/master)](https://cloud.drone.io/pegasus-io/this-is-gravitee)
+
+* _CI Build status_ for the work in progress (on the `develop` branch) :
+
+[![Build Status](https://cloud.drone.io/api/badges/pegasus-io/this-is-gravitee/status.svg?ref=refs/heads/develop)](https://cloud.drone.io/pegasus-io/this-is-gravitee)
+
+
+
 # Gravitee On Earth
 
 This Recipes helps you quickly provision a Full `Gravitee` API Gateway Stack using `Docker Compose` / `Podman`
@@ -57,4 +70,3 @@ Which is why our recommendations to run this docker-compose, on the hardawre req
 * I recommend at least 8GB RAM, I think you can give a try for 6GB of RAM, and I am almost sure you are going to have a hard time at 4 GB of RAM
 
 Et voilà, for the hardware requirements, you are done.
-
